@@ -394,6 +394,8 @@ function vcpkgInvokeCommandClean()
     $command = ". $tripleQuotes$cleanEnvScript$tripleQuotes; & $tripleQuotes$executable$tripleQuotes $argumentsWithEscapedQuotes"
     $arg = "-NoProfile", "-ExecutionPolicy Bypass", "-command $command"
 
+    Write-Host $arg
+
     $process = Start-Process -FilePath powershell.exe -ArgumentList $arg -PassThru -NoNewWindow
     Wait-Process -InputObject $process
     $ec = $process.ExitCode
