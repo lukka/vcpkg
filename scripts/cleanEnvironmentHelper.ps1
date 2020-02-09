@@ -4,6 +4,12 @@ $specialEnvironmentMap = @{ "SystemDrive"=$env:SystemDrive; "SystemRoot"=$env:Sy
 $machineEnvironmentMap = [Environment]::GetEnvironmentVariables('Machine') # HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment
 $userEnvironmentMap = [Environment]::GetEnvironmentVariables('User') # HKEY_CURRENT_USER\Environment
 
+Write-Host "specialEnvironmentMap.Keys=$(($specialEnvironmentMap).Keys)"
+
+Write-Host "machineEnvironmentMap.Keys=$(($machineEnvironmentMap).Keys)"
+
+Write-Host "userEnvironmentMap.Key=$(($userEnvironmentMap).Keys)"
+
 # Identify the keySet of environment variable names
 $nameSet = ($specialEnvironmentMap.Keys + $machineEnvironmentMap.Keys + $userEnvironmentMap.Keys) | Sort-Object | Select-Object -Unique
 
@@ -12,6 +18,7 @@ foreach ($name in $nameSet)
 {
     if ($specialEnvironmentMap.ContainsKey($name))
     {
+        "specEnv($name,..."
         [Environment]::SetEnvironmentVariable($name, $specialEnvironmentMap[$name], 'Process')
         continue;
     }
@@ -30,12 +37,14 @@ foreach ($name in $nameSet)
 
     if ($userEnvironmentMap.ContainsKey($name))
     {
+        "userEnv($name,..."
         [Environment]::SetEnvironmentVariable($name, $userEnvironmentMap[$name], 'Process')
         continue;
     }
 
     if ($machineEnvironmentMap.ContainsKey($name))
     {
+        "machineEnv($name,..."
         [Environment]::SetEnvironmentVariable($name, $machineEnvironmentMap[$name], 'Process')
         continue;
     }
@@ -48,5 +57,6 @@ $processEnvironmentMap = [Environment]::GetEnvironmentVariables('Process')
 $variablesForRemoval = $processEnvironmentMap.Keys | Where-Object {$nameSet -notcontains $_}
 foreach ($name in $variablesForRemoval)
 {
+    Write-Host "remove($name"
     [Environment]::SetEnvironmentVariable($name, $null, 'Process')
 }

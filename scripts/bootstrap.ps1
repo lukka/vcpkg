@@ -403,6 +403,18 @@ function vcpkgInvokeCommandClean()
 
 # vcpkgInvokeCommandClean cmd "/c echo %PATH%"
 Write-Host "`nBuilding vcpkg.exe ...`n"
+
+"All env Vars:"
+[System.Environment]::GetEnvironmentVariables()
+@{ "SystemDrive"=$env:SystemDrive; "SystemRoot"=$env:SystemRoot; "UserProfile"=$env:UserProfile; "TMP"=$env:TMP } 
+"Machine:"
+[Environment]::GetEnvironmentVariables('Machine') 
+"User:"
+[Environment]::GetEnvironmentVariables('User')
+"Process:"
+[Environment]::GetEnvironmentVariables('Process')
+
+
 $ec = vcpkgInvokeCommandClean $msbuildExe $arguments
 
 if ($ec -ne 0)
